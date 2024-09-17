@@ -1,5 +1,6 @@
 package com.web.personalstudy.entity;
 
+import com.web.personalstudy.dto.ReplyRequestDto;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,6 +26,10 @@ public class Reply extends Timestamped {
         this.comment = comment;
         this.schedule = schedule;
         schedule.getReplies().add(this);
+    }
+
+    public void replyUpdate(ReplyRequestDto replyRequestDto) {
+        this.comment = replyRequestDto.getComment();
     }
 
 

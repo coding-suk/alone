@@ -68,10 +68,38 @@ public class ReplyController {
      * @return 업데이트된 댓글 응답 DTO와 HTTP 상태 코드 200(ok)
      * */
     @PutMapping("/{sid}/replies/{rid}")
-    public ResponseEntity<ApiREsponse<ReplyResponseDto>> updateReply(@PathVariable long sid,
+    public ResponseEntity<ApiResponse<ReplyResponseDto>> updateReply(@PathVariable long sid,
                                                                      @PathVariable long rid,
                                                                      @RequestBody ReplyRequestDto replyRequestDto) {
-
+        try{
+            ReplyResponseDto updateReply = replyService.updateReply(rid, replyRequestDto);
+            return ResponseEntity.ok(ApiResponse.success(updateReply));
+        } catch (Exception e) {
+            LoggerUtil.LogError("댓글 업데이트", e);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ApiResponse.error("댓글 업데이트 실패", e.getMessage()));
+        }
     }
+
+    /**
+     * 특정 댓글을 삭제합니다
+     * @Param rid 댓글의 ID
+     * @Param sid 댓글이 달릴 일정의 ID
+     * @return 상태 코드 204(No Content)
+     * */
+
+    @DeleteMapping("/{sid}/replies/{rid}")
+    public ResponseEntity<ApiResponse<Void>> deleteReply(@PathVariable long sid,
+                                                         @PathVariable long rid) {
+        try {
+            replyService.deleteReply(rid);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            LoggerUtil.logError("댓글 삭제", e);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ApiResponse.error("댓글 삭제 실패", e.getMessage()));
+        }
+    }
+
 
 }
