@@ -1,4 +1,4 @@
-package com.web.personalstudy.dto;
+package com.web.personalstudy.dto.schedule;
 
 import lombok.Builder;
 import lombok.Data;
