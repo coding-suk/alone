@@ -3,6 +3,7 @@ package com.web.personalstudy.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Fetch;
 
 @Entity
 @Getter
@@ -13,11 +14,16 @@ public class ScheduleAssignees {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
     @ManyToOne(fetch =  FetchType.LAZY)
     @JoinColumn(name = "schedule_id")
     private Schedule schedule;
 
-    public ScheduleAssignees(Schedule schedule) {
+    public ScheduleAssignees(User user, Schedule schedule) {
+        this.user = user;
         this.schedule = schedule;
     }
 }

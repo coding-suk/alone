@@ -1,4 +1,4 @@
-package com.web.personalstudy.dto;
+package com.web.personalstudy.dto.reply;
 
 import com.web.personalstudy.entity.Reply;
 import lombok.AllArgsConstructor;

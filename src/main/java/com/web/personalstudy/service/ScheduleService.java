@@ -5,7 +5,9 @@ import com.web.personalstudy.dto.schedule.ScheduleResponseDto;
 import com.web.personalstudy.dto.schedule.ScheduleRequestDto;
 import com.web.personalstudy.entity.Schedule;
 import com.web.personalstudy.entity.ScheduleAssignees;
+import com.web.personalstudy.entity.User;
 import com.web.personalstudy.repository.ScheduleRepository;
+import com.web.personalstudy.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,9 +22,10 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class ScheduleService implements  ScheduleServiceImp{
+public class ScheduleService implements ScheduleServiceImp{
 
     private final ScheduleRepository scheduleRepository;
+    private final UserRepository userRepository;
 
     /**
      * 새로운 일정을 생성하는 메서드
@@ -101,18 +104,21 @@ public class ScheduleService implements  ScheduleServiceImp{
         return ScheduleResponseDto.from(scheduleRepository.save(schedule));
     }
 
+    @Override
+    @Transactional
+    public void deleteSchedule(Long sid) {
+        Schedule schedule = scheduleRepository.findByIdOrElseThrow(sid);
+        scheduleRepository.delete(schedule);
 
-
-
-
+    }
 
 
     @Override
-    private void addNewAssignees(Schedule schedule, Set<Long> assigneeIds) {
+    public void addNewAssignees(Schedule schedule, Set<Long> assigneeIds) {
         // 현재 담당자들의 ID를 수집
         Set<Long> currentAssigneeIds = schedule.getAssignees().stream()
                 .map(assignee -> assignee.getUser().getUid())
-                .collect(Collerctors.toSet());
+                .collect(Collectors.toSet());
 
         // 새로 추가해야 할 담당자 ID
         Set<Long> newAssigneeIds = new HashSet<>(assigneeIds);
@@ -127,7 +133,7 @@ public class ScheduleService implements  ScheduleServiceImp{
         schedule.getAssignees().removeAll(toRemove);
 
         //새로 추가해야할 담당자 처리
-        for (Long AssigneeId : newAssigneeIds) {
+        for (Long assigneeId : newAssigneeIds) {
             User assignee = userRepository.findByIdOrElseThrow(assigneeId);
             schedule.addAssignedUser(assignee);
         }

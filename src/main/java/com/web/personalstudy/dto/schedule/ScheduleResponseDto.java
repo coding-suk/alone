@@ -34,9 +34,9 @@ public class ScheduleResponseDto {
 
 
         schedule.getAssignees().stream()
-                .map(ScheduleAssignees:: getUser)
+                .map(ScheduleAssignees::getUser)
                 .distinct()
-                .forEach(user - > {
+                .forEach(user -> {
                     assigneeIds.add(user.getUid());
                     assigneeNames.add(user.getUserName());
                     assigneeEmails.add(user.getEmail());

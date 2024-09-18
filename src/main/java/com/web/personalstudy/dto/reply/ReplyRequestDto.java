@@ -1,4 +1,4 @@
-package com.web.personalstudy.dto;
+package com.web.personalstudy.dto.reply;
 
 import lombok.Builder;
 import lombok.Data;

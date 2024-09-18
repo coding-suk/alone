@@ -1,7 +1,7 @@
 package com.web.personalstudy.service;
 
-import com.web.personalstudy.dto.ReplyRequestDto;
-import com.web.personalstudy.dto.ReplyResponseDto;
+import com.web.personalstudy.dto.reply.ReplyRequestDto;
+import com.web.personalstudy.dto.reply.ReplyResponseDto;
 import com.web.personalstudy.entity.Reply;
 import com.web.personalstudy.entity.Schedule;
 import com.web.personalstudy.repository.ReplyRepository;
@@ -83,10 +83,13 @@ public class ReplyService implements ReplyServiceImpl{
      * 댓글을 삭제하는 메서드
      * 댓글 ID로 해당 댓글을 조회하고 삭제
      * @Param rid 댓글 ID
+     * @Param replyRequestDto 댓글 요청 DTO
+     * @return 수정된 댓글의 응답 DTO
      * */
     @Override
     public void deleteReply(Long rid) {
-
+        Reply reply = replyRepository.findByIdOrElseThrow(rid);
+        replyRepository.delete(reply);
     }
 
 

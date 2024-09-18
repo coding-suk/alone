@@ -1,8 +1,8 @@
 package com.web.personalstudy.service;
 
 
-import com.web.personalstudy.dto.ReplyRequestDto;
-import com.web.personalstudy.dto.ReplyResponseDto;
+import com.web.personalstudy.dto.reply.ReplyRequestDto;
+import com.web.personalstudy.dto.reply.ReplyResponseDto;
 
 import java.util.List;
 

@@ -1,10 +1,10 @@
 package com.web.personalstudy.controller;
 
 import com.web.personalstudy.common.response.ApiResponse;
-import com.web.personalstudy.dto.ReplyRequestDto;
-import com.web.personalstudy.dto.ReplyResponseDto;
+import com.web.personalstudy.common.util.LoggerUtil;
+import com.web.personalstudy.dto.reply.ReplyRequestDto;
+import com.web.personalstudy.dto.reply.ReplyResponseDto;
 import com.web.personalstudy.service.ReplyService;
-import com.web.personalstudy.ㅇ새.ReplyRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -75,7 +75,7 @@ public class ReplyController {
             ReplyResponseDto updateReply = replyService.updateReply(rid, replyRequestDto);
             return ResponseEntity.ok(ApiResponse.success(updateReply));
         } catch (Exception e) {
-            LoggerUtil.LogError("댓글 업데이트", e);
+            LoggerUtil.logError("댓글 업데이트", e);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(ApiResponse.error("댓글 업데이트 실패", e.getMessage()));
         }

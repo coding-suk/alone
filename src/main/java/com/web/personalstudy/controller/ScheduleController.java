@@ -1,11 +1,13 @@
 package com.web.personalstudy.controller;
 
 import com.web.personalstudy.common.response.ApiResponse;
+import com.web.personalstudy.common.util.LoggerUtil;
 import com.web.personalstudy.dto.schedule.SchedulePageResponseDto;
 import com.web.personalstudy.dto.schedule.ScheduleResponseDto;
 import com.web.personalstudy.dto.schedule.ScheduleRequestDto;
 import com.web.personalstudy.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +19,7 @@ import java.util.Optional;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
+@Slf4j
 public class ScheduleController {
 
     private final ScheduleService scheduleService;
@@ -56,7 +59,7 @@ public class ScheduleController {
         }).orElseGet(()-> {
             LoggerUtil.logError("일정 조회", new NoSuchElementException("일정을 찾을 수 없습니다"));
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(ApiResponse.error("일정을 찾을 수 없습니다", "일정 ID: " + sid + "에 해당하는 일정이 존재하지 않습니다"))
+                    .body(ApiResponse.error("일정을 찾을 수 없습니다", "일정 ID: " + sid + "에 해당하는 일정이 존재하지 않습니다"));
         });
     }
 
@@ -69,7 +72,7 @@ public class ScheduleController {
      */
 
     @GetMapping("/v1,schedules")
-    public ResponseEntity<ApiResponse<Page<ScheduleResponseDto>>> getSchedules(@RequestParam(defaultValue = "0") int page,
+    public ResponseEntity<ApiResponse<Page<SchedulePageResponseDto>>> getSchedules(@RequestParam(defaultValue = "0") int page,
                                                                                @RequestParam(defaultValue = "10") int size) {
         Page<SchedulePageResponseDto> schedule = scheduleService.getSchedules(page, size);
         return ResponseEntity.ok(ApiResponse.success(schedule));
@@ -86,7 +89,7 @@ public class ScheduleController {
     public ResponseEntity<ApiResponse<ScheduleResponseDto>> updateSchedule(@PathVariable Long sid,
                                                                            @RequestBody ScheduleRequestDto scheduleRequestDto) {
         try {
-            ScheduleResponseDto updateSchedule = scheduleService.updateSchedule(sid, scheduleRequestDto);
+            ScheduleResponseDto updatedSchedule = scheduleService.updateSchedule(sid, scheduleRequestDto);
             return ResponseEntity.ok(ApiResponse.success(updatedSchedule));
         }
         catch (Exception e) {
@@ -96,5 +99,21 @@ public class ScheduleController {
         }
     }
 
+    /**
+     * 특정 일정을 삭제
+     *
+     * @Param sid 일정의 ID
+     * @return HTTP 상태 코드 204(No Content)
+     * */
+    @DeleteMapping("/v1/schedules/{sid}")
+    public ResponseEntity<ApiResponse<ScheduleResponseDto>> deleteSchedule(@PathVariable long sid) {
+        try {
+            scheduleService.deleteSchedule(sid);
+            return ResponseEntity.noContent().build(); // No Content는 본문이 없으므로, ApiResponse 사용 필요x
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ApiResponse.error("일정 삭제 실패", e.getMessage()));
+        }
+    }
 
 }
